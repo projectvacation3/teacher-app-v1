@@ -10,6 +10,17 @@ import { useToast } from '@/hooks/use-toast';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
+// List of US states for the dropdown
+const usStates = [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 
+  'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 
+  'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 
+  'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 
+  'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 
+  'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 
+  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+];
+
 const Register = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -29,6 +40,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
   
   // Teacher specific fields
   const [school, setSchool] = useState('');
@@ -73,27 +85,91 @@ const Register = () => {
   };
 
   const validatePassword = () => {
+    // Check if passwords match
     if (password !== confirmPassword) {
+      setPasswordError("Passwords don't match");
+      return false;
+    }
+    
+    // Check if password meets minimum requirements (8 chars with at least one number)
+    if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long");
+      return false;
+    }
+    
+    if (!/\d/.test(password)) {
+      setPasswordError("Password must contain at least one number");
+      return false;
+    }
+    
+    setPasswordError("");
+    return true;
+  };
+  
+  const validateTeacherSelections = () => {
+    // Check if at least one standard gift option is selected
+    const hasStandardOption = favoriteGifts.some(gift => standardGiftOptions.includes(gift));
+    
+    if (!hasStandardOption && favoriteGifts.length > 0) {
       toast({
-        title: "Passwords don't match",
-        description: "Please make sure your passwords match.",
+        title: "Standard Option Required",
+        description: "Please select at least one gift option from the Standard options (Starbucks, Walmart, or Uber Eats).",
         variant: "destructive",
       });
       return false;
     }
+    
     return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validatePassword()) return;
+    if (!validatePassword()) {
+      toast({
+        title: "Invalid Password",
+        description: passwordError,
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // For teachers, validate gift selections
+    if (role === 'teacher' && favoriteGifts.length > 0) {
+      if (!validateTeacherSelections()) {
+        return;
+      }
+    }
     
     setIsLoading(true);
 
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // For demo, create mock accounts
+      if (email === 'teacher@example.com' && password === 'teacher123') {
+        localStorage.setItem('teacherAccount', JSON.stringify({
+          role: 'teacher',
+          firstName,
+          lastName,
+          email,
+          school,
+          grade,
+          birthMonth,
+          birthDay,
+          favoriteGifts
+        }));
+      } else if (email === 'parent@example.com' && password === 'parent123') {
+        localStorage.setItem('parentAccount', JSON.stringify({
+          role: 'parent',
+          firstName,
+          lastName,
+          email,
+          city,
+          state
+        }));
+      }
       
       toast({
         title: "Registration successful!",
@@ -270,12 +346,20 @@ const Register = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="state">State</Label>
-                    <Input
+                    <select
                       id="state"
                       value={state}
                       onChange={(e) => setState(e.target.value)}
                       required
-                    />
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <option value="">Select State</option>
+                      {usStates.map((stateName) => (
+                        <option key={stateName} value={stateName}>
+                          {stateName}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
@@ -289,6 +373,12 @@ const Register = () => {
                     required
                     placeholder={role === 'teacher' ? "Your school email" : "Your email"}
                   />
+                  {role === 'teacher' && (
+                    <p className="text-sm text-gray-500 mt-1">For demo, use: teacher@example.com</p>
+                  )}
+                  {role === 'parent' && (
+                    <p className="text-sm text-gray-500 mt-1">For demo, use: parent@example.com</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -312,6 +402,15 @@ const Register = () => {
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
                     </div>
+                    <p className="text-xs text-gray-500">
+                      Password must be at least 8 characters with at least one number
+                    </p>
+                    {role === 'teacher' && (
+                      <p className="text-xs text-gray-500">For demo, use: teacher123</p>
+                    )}
+                    {role === 'parent' && (
+                      <p className="text-xs text-gray-500">For demo, use: parent123</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="confirmPassword">Confirm Password</Label>
@@ -324,16 +423,20 @@ const Register = () => {
                     />
                   </div>
                 </div>
+                
+                {passwordError && (
+                  <div className="text-destructive text-sm">{passwordError}</div>
+                )}
 
                 {role === 'teacher' && (
                   <div className="space-y-3">
                     <Label>Select Your Favorites (Up to 5)</Label>
                     <p className="text-sm text-gray-500">
-                      Choose up to 5 gift card options you'd prefer to receive. At least one must be from the Standard options.
+                      Choose up to 5 gift card options you'd prefer to receive. <span className="font-medium">At least one must be from the Standard options.</span>
                     </p>
                     
                     <div className="mt-3">
-                      <h4 className="font-medium mb-2">Standard Options:</h4>
+                      <h4 className="font-medium mb-2">Standard Options (Select at least one):</h4>
                       <div className="flex flex-wrap gap-3">
                         {standardGiftOptions.map((gift) => (
                           <button
