@@ -32,7 +32,7 @@ const Login = () => {
       
       // In a real app, you'd make an API call to authenticate
       // For the demo accounts specifically requested
-      if ((email === 'teacher@example.com' && password === 'teacher123') || 
+      if ((email === 'teacher@a.com' && password === 'teacher') || 
           (email === 'teacher' && password === 'teacher')) {
         toast({
           title: "Login successful",
@@ -42,10 +42,10 @@ const Login = () => {
         localStorage.setItem('currentUser', JSON.stringify({
           role: 'teacher',
           name: 'Jane Doe',
-          email: 'teacher@example.com'
+          email: 'teacher@a.com'
         }));
         navigate('/teacher-dashboard');
-      } else if ((email === 'parent@example.com' && password === 'parent123') || 
+      } else if ((email === 'parent@a.com' && password === 'parent') || 
                  (email === 'parent' && password === 'parent')) {
         toast({
           title: "Login successful",
@@ -55,7 +55,7 @@ const Login = () => {
         localStorage.setItem('currentUser', JSON.stringify({
           role: 'parent',
           name: 'John Smith',
-          email: 'parent@example.com'
+          email: 'parent@a.com'
         }));
         navigate('/parent-dashboard');
       } else {
@@ -94,7 +94,7 @@ const Login = () => {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
-                  type="email"
+                  type="text"
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -170,12 +170,12 @@ const Login = () => {
               <div className="space-y-3">
                 <div className="text-sm">
                   <p className="font-medium">Teacher Demo:</p>
-                  <p>Username: teacher</p>
+                  <p>Username: teacher@a.com</p>
                   <p>Password: teacher</p>
                 </div>
                 <div className="text-sm">
                   <p className="font-medium">Parent Demo:</p>
-                  <p>Username: parent</p>
+                  <p>Username: parent@a.com</p>
                   <p>Password: parent</p>
                 </div>
               </div>
