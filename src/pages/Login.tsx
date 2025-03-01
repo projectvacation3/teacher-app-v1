@@ -31,12 +31,33 @@ const Login = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // In a real app, you'd make an API call to authenticate
-      if (email && password) {
+      // For the demo accounts specifically requested
+      if ((email === 'teacher@example.com' && password === 'teacher123') || 
+          (email === 'teacher' && password === 'teacher')) {
         toast({
           title: "Login successful",
           description: "Welcome back to GiftBridge!",
         });
-        navigate('/dashboard');
+        // Store user info in localStorage for demo purposes
+        localStorage.setItem('currentUser', JSON.stringify({
+          role: 'teacher',
+          name: 'Jane Doe',
+          email: 'teacher@example.com'
+        }));
+        navigate('/teacher-dashboard');
+      } else if ((email === 'parent@example.com' && password === 'parent123') || 
+                 (email === 'parent' && password === 'parent')) {
+        toast({
+          title: "Login successful",
+          description: "Welcome back to GiftBridge!",
+        });
+        // Store user info in localStorage for demo purposes
+        localStorage.setItem('currentUser', JSON.stringify({
+          role: 'parent',
+          name: 'John Smith',
+          email: 'parent@example.com'
+        }));
+        navigate('/parent-dashboard');
       } else {
         toast({
           title: "Login failed",
@@ -142,6 +163,22 @@ const Login = () => {
                   Sign up
                 </Link>
               </p>
+            </div>
+            
+            <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-center font-semibold mb-3">Demo Accounts</h3>
+              <div className="space-y-3">
+                <div className="text-sm">
+                  <p className="font-medium">Teacher Demo:</p>
+                  <p>Username: teacher</p>
+                  <p>Password: teacher</p>
+                </div>
+                <div className="text-sm">
+                  <p className="font-medium">Parent Demo:</p>
+                  <p>Username: parent</p>
+                  <p>Password: parent</p>
+                </div>
+              </div>
             </div>
           </div>
 

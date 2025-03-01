@@ -105,7 +105,7 @@ const HeroSection = () => {
             />
 
             {/* Decorative floating cards */}
-            <div className="absolute -top-10 -right-8 glass-card p-4 rounded-lg shadow-lg flex items-center space-x-3 animate-float">
+            <div className="absolute -top-10 -right-8 glass-card p-4 rounded-lg shadow-lg flex items-center space-x-3 animate-float bg-white bg-opacity-95">
               <div className="bg-green-100 w-10 h-10 rounded-full flex items-center justify-center text-green-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </div>
@@ -115,7 +115,7 @@ const HeroSection = () => {
               </div>
             </div>
             
-            <div className="absolute -bottom-6 -left-6 glass-card p-4 rounded-lg shadow-lg max-w-[220px] animate-float" style={{ animationDelay: "2s" }}>
+            <div className="absolute -bottom-6 -left-6 glass-card p-4 rounded-lg shadow-lg max-w-[220px] animate-float bg-white bg-opacity-95" style={{ animationDelay: "2s" }}>
               <div className="flex items-center space-x-2 mb-2">
                 <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"></path><path d="M20 12v4H6a2 2 0 0 0-2 2c0 1.1.9 2 2 2h12v-4"></path></svg>
